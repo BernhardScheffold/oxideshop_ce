@@ -1471,7 +1471,7 @@ class User extends \oxBase
 
             $sSelect = $this->formUserCookieQuery($sUser, $sShopID);
             $rs = $oDb->select($sSelect);
-            if ($rs != false && $rs->recordCount() > 0) {
+            if ($rs != false && $rs->count() > 0) {
                 while (!$rs->EOF) {
                     $sTest = crypt($rs->fields[1], $rs->fields[2]);
                     if ($sTest == $sPWD) {
@@ -1664,7 +1664,7 @@ class User extends \oxBase
             $sQ .= " and oxid <> " . $oDb->quote($sOxid);
         }
         $oRs = $oDb->select($sQ, false, false);
-        if ($oRs != false && $oRs->recordCount() > 0) {
+        if ($oRs != false && $oRs->count() > 0) {
 
             if ($this->_blMallUsers) {
 
