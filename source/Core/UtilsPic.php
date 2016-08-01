@@ -165,9 +165,9 @@ class UtilsPic extends \oxSuperCfg
         //Only called from admin context (see ESDEV-3804 and ESDEV-3822).
         $database = oxDb::getDb();
 
-        $query = "select count(*) from $sTable where $sField = " . $$database->quote($sPicName) . " group by $sField ";
+        $query = "SELECT COUNT(*) FROM $sTable WHERE $sField = ? GROUP BY $sField ";
 
-        return $database->getOne($query);
+        return $database->getOne($query, array($sPicName));
     }
 
     /**
