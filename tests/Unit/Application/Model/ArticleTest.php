@@ -107,7 +107,7 @@ class ArticleTest extends \OxidTestCase
         $oDB->Execute('delete from oxselectlist where oxid = "_testoxsellist" ');
         $oDB->Execute('delete from oxobject2selectlist where oxselnid = "_testoxsellist" ');
 
-        oxDb::getInstance()->resetTblDescCache();
+        $this->setProtectedClassProperty(oxDb::getInstance(), 'tblDescCache', []);
 
         parent::tearDown();
     }
@@ -3048,7 +3048,6 @@ class ArticleTest extends \OxidTestCase
     {
         $oArticle = $this->_createArticle('_testArt');
         $oArticle->oxarticles__oxvat = new oxField(7, oxField::T_RAW);
-        //$this->getConfig()->setConfigParam('aCurrencies', array(0 => 'EUR@ 1.00@ ,@ .@ EUR@ 2'));
         $oArticle->oxarticles__oxtprice = new oxField(25, oxField::T_RAW);
         $oTPrice = $oArticle->getTPrice();
         $this->assertEquals(25, $oTPrice->getBruttoPrice());
@@ -6423,7 +6422,7 @@ class ArticleTest extends \OxidTestCase
         $dbMock->expects($this->any())
             ->method('getOne')
             ->will($this->returnValue($return));
-        oxDb::setDbObject($dbMock);
+        $this->setProtectedClassProperty(Database::getInstance(), 'db' , $dbMock);
 
         $this->assertEquals($expected, $oA->inPriceCategory('sCatNid'));
     }
@@ -6446,7 +6445,7 @@ class ArticleTest extends \OxidTestCase
                     throw new Exception($s);
             }));
 
-        oxDb::setDbObject($dbMock);
+        $this->setProtectedClassProperty(Database::getInstance(), 'db' , $dbMock);
 
         try {
             $oA->inPriceCategory('sCatNid');
@@ -6840,7 +6839,7 @@ class ArticleTest extends \OxidTestCase
 
         $aQ[] = "CREATE TABLE oxartextends_set1 (OXID char(32) COLLATE latin1_general_ci NOT NULL, PRIMARY KEY (`OXID`)) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci";
         $aQ[] = "ALTER TABLE oxartextends_set1 ADD OXLONGDESC_5 text COLLATE latin1_general_ci NOT NULL";
-        
+
         $aQ[] = "CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxarticles_1_1 AS SELECT oxarticles.* FROM oxarticles";
         $aQ[] = "CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxarticles_1_0 AS SELECT oxarticles.* FROM oxarticles";
         $aQ[] = "CREATE OR REPLACE SQL SECURITY INVOKER VIEW oxv_oxartextends_0 AS SELECT oxartextends.* FROM oxartextends";
