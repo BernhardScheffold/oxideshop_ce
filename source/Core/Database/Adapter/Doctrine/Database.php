@@ -363,11 +363,11 @@ class Database implements DatabaseInterface
     public function quoteIdentifier($string)
     {
         $identifierQuoteCharacter = $this->getConnection()->getDatabasePlatform()->getIdentifierQuoteCharacter();
-        
+
         if (!$identifierQuoteCharacter) {
             $identifierQuoteCharacter = '`';
         }
-        
+
         $string = trim(str_replace($identifierQuoteCharacter, '', $string));
 
         return $this->getConnection()->quoteIdentifier($string);
@@ -528,7 +528,7 @@ class Database implements DatabaseInterface
              */
             /** @var \Doctrine\DBAL\Driver\Statement $statement Statement is prepared and executed by executeQuery() */
             $statement = $this->getConnection()->executeQuery($sqlSelect, $parameters);
-            
+
             $result = new ResultSet($statement);
         } catch (DBALException $exception) {
             $exception = $this->convertException($exception);
@@ -599,7 +599,7 @@ class Database implements DatabaseInterface
         // END deprecated
 
         $result = array();
-        
+
         try {
             $rows = $this->getConnection()->fetchAll($sqlSelect, $parameters);
             foreach ($rows as $row) {
@@ -640,7 +640,7 @@ class Database implements DatabaseInterface
         // END deprecated
 
         $affectedRows = 0;
-        
+
         try {
             $affectedRows = $this->getConnection()->executeUpdate($query, $parameters, $types);
         } catch (DBALException $exception) {
@@ -860,7 +860,7 @@ class Database implements DatabaseInterface
             $exception = $this->convertException($exception);
             $this->handleException($exception);
         }
-        
+
         if ($this->doesStatementProduceOutput($sqlSelect)) {
             $result = $statement->fetchAll();
         }
@@ -994,6 +994,15 @@ class Database implements DatabaseInterface
      */
     public function isRollbackOnly() {
         return $this->connection->isRollbackOnly();
+    }
+
+    /**
+     * Checks whether a transaction is currently active.
+     *
+     * @return boolean TRUE if a transaction is currently active, FALSE otherwise.
+     */
+    public function isTransactionActive() {
+        return $this->connection->isTransactionActive();
     }
 
     /**
@@ -1163,22 +1172,22 @@ class Database implements DatabaseInterface
 
     /**
      * Get the connection from the Doctrine DBAL DriverManager.
-     * 
-     * @throws DBALException 
-     * 
+     *
+     * @throws DBALException
+     *
      * @return Connection The connection to the database.
      */
     protected function getConnectionFromDriverManager()
     {
         $configuration = new Configuration();
         $connectionParameters = $this->getConnectionParameters();
-        
+
         return DriverManager::getConnection($connectionParameters, $configuration);
     }
 
     /**
      * Create the message we want to throw, if there was a connection error.
-     * 
+     *
      * @param Connection $connection The connection.
      *
      * @return string The message, we want throw, if there was a connection error.
